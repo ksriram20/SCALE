@@ -334,6 +334,75 @@ def build_custom_episode(need, minutes=15, words=None, render=True):
     return script_path, chosen
 
 
+def build_episode_from_concepts(need, chosen, minutes=20, render=False):
+    """Synthesize a briefing from pre-selected concepts — skips the matcher.
+    Used by the multi-episode planner so each episode gets its specific slice."""
+    from .script_builder import build_custom_script
+
+    cfg = load_config()
+    profile = load_profile()
+    source = load_source()
+    llm = OpenRouterClient(cfg)
+
+    ep = cfg["episode"]
+    wpm = ep.get("words_per_minute", 150)
+    target_words = int(minutes * wpm)
+    cfg["episode"]["target_words"] = [int(target_words * 0.9), int(target_words * 1.1)]
+
+    persona_text = persona_to_text(profile)
+    domain = profile.get("domain", "your work")
+    locale = profile.get("country", "")
+    stance = source.get("application_stance", "both")
+
+    segments = []
+    for rec in chosen:
+        concept = {
+            "title": rec["title"], "mechanism": rec["mechanism"],
+            "explanation": rec["explanation"], "category": rec.get("category", ""),
+        }
+        rec_source = {
+            "title": rec.get("book", ""), "author": rec.get("author", ""),
+            "unit_label": rec.get("unit_label", "concept"), "application_stance": stance,
+        }
+        application = synthesize_application(llm, cfg, rec_source, concept, persona_text, domain, locale)
+        if cfg["verify"]["enabled"]:
+            for _ in range(cfg["verify"]["max_regenerations"] + 1):
+                audit = verify(llm, cfg, rec_source, rec.get("explanation", ""), concept, application)
+                if audit.get("concept_faithful") and audit.get("application_grounded"):
+                    break
+                application = synthesize_application(llm, cfg, rec_source, concept, persona_text, domain, locale)
+        segments.append({"concept": concept, "application": application})
+
+    script = build_custom_script(profile, need, segments, pauses=cfg["tts"].get("pauses"),
+                                 with_recap=cfg["episode"].get("recap", True))
+    if cfg["episode"].get("polish"):
+        script = polish_script(llm, cfg, script)
+    if (cfg["tts"].get("pauses") or {}).get("micro", True):
+        script = breathe(script, profile.get("name", ""))
+
+    script_dir = ROOT / cfg["output"]["script_dir"]
+    script_dir.mkdir(parents=True, exist_ok=True)
+    script_path = script_dir / "brief.txt"
+    script_path.write_text(script, encoding="utf-8")
+    _share(script_path)
+    log.info("episode from %d concepts -> %s (%d words)", len(segments), script_path, word_count(script))
+
+    topic = _safe(need)[:48]
+    today = datetime.date.today().strftime("%Y-%m-%d")
+    meta = {
+        "stem": _safe(f"SCALE Brief {today} - {topic}"),
+        "title": f"SCALE Brief: {topic}",
+        "artist": "SCALE", "album": "SCALE Briefings",
+        "date": _year(), "genre": "Education",
+        "comment": need[:240],
+    }
+    _write_meta(script_dir, "brief", meta)
+
+    if render:
+        produce_audio(cfg, script, meta)
+    return script_path, chosen
+
+
 def segment_book(cfg, source):
     """Segment a book into units, using the native EPUB path when applicable."""
     path = find_book(cfg, source)
