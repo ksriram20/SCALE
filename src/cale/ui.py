@@ -99,11 +99,14 @@ def scan_concepts(need):
 
 # ---- brief: single episode --------------------------------------------
 
-def generate_brief(need, n_concepts, auto_duration, minutes):
+def generate_brief(need, n_concepts, auto_duration, minutes, progress=None):
+    import gradio as gr
     from .pipeline import build_custom_episode
 
     if not (need or "").strip():
         return "Enter your situation first.", ""
+    if progress:
+        progress(0.05, desc="Matching concepts to your situation…")
     mins = 20 if auto_duration else int(minutes)
     path, chosen = build_custom_episode(need, mins, render=False)
     chosen = chosen[:int(n_concepts)]
@@ -136,7 +139,7 @@ def calculate_plan(candidates, minutes_per_ep):
     return "\n".join(lines), gr.update(choices=choices, value=choices[0] if choices else None)
 
 
-def generate_planned_ep(need, candidates, ep_label, minutes_per_ep):
+def generate_planned_ep(need, candidates, ep_label, minutes_per_ep, progress=None):
     from .pipeline import build_episode_from_concepts
 
     if not candidates or not ep_label:
@@ -151,6 +154,8 @@ def generate_planned_ep(need, candidates, ep_label, minutes_per_ep):
     chosen = candidates[idx * per_ep: (idx + 1) * per_ep]
     if not chosen:
         return "No concepts for that episode.", ""
+    if progress:
+        progress(0.05, desc=f"Synthesising {len(chosen)} concept(s) for {ep_label}…")
     path, used = build_episode_from_concepts(need, chosen, int(minutes_per_ep), render=False)
     lines = [f"**Episode {idx + 1} — {len(used)} concept(s):**\n"]
     for c in used:
@@ -384,11 +389,11 @@ def launch_ui(share=False):
             brief_script = gr.Textbox(label="Your briefing", lines=16)
 
             gen_btn.click(generate_brief, [need, n_concepts, auto_dur, minutes],
-                          [matched_md, brief_script])
+                          [matched_md, brief_script], show_progress="full")
             # wire multi-episode generate to the same outputs
             ep_gen_btn.click(generate_planned_ep,
                              [need, concept_state, ep_selector, ep_minutes],
-                             [matched_md, brief_script])
+                             [matched_md, brief_script], show_progress="full")
 
             # ── voice & audio ──
             gr.Markdown("### Voice & audio")

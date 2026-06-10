@@ -29,7 +29,7 @@ llm:
   max_tokens: 4000
   cooldown_seconds: 60      # NIM limits are generous; short wait if a model is momentarily busy
   max_retries: 5
-  request_timeout: 120
+  request_timeout: 300
 
 tts:
   provider: kokoro
