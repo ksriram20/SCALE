@@ -10,6 +10,16 @@ output/
 # Secrets
 .env
 
+# Personal profile (keep only profile.example.yaml in repo)
+config/profile.yaml
+config/profile.yaml.bak
+
+# Claude Code project config (local build tooling)
+.claude/
+
+# Build-time reference material
+reference/
+
 # Python
 __pycache__/
 *.pyc

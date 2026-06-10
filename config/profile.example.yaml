@@ -1,38 +1,32 @@
-# EXAMPLE profile (a worked persona) — for reference only.
-# The live profile is config/profile.yaml, built by the context interview.
+# EXAMPLE profile — copy to profile.yaml and edit, or run `scale ui` and use the interview.
+# This is a fictional persona to show the schema. The engine uses every field to
+# personalise concept explanations and the "how this lands for you" application sections.
 
-name: Sriram
-role: Assistant Professor & Researcher
-domain: Higher education and academic research
-country: India
+name: Maya
+role: Founding engineer at a 12-person B2B SaaS startup
+domain: Software engineering and early-stage product development
+country: Canada (Toronto)
 
 institution_context: |
-  Indian higher-education system. Careers run on UGC norms and pay scales, NAAC
-  accreditation cycles, and competitive funding from bodies like DST, SERB, ICSSR
-  and limited university seed grants. Power is hierarchical and seniority-driven:
-  the Head of Department and Dean control teaching load, committee seats, and
-  resource access; senior professors hold sway over CAS/API promotions, expected
-  co-authorship, and visibility.
-
-context: |
-  Assistant professor and active researcher in an Indian university; days mix
-  teaching, publishing, chasing grants, supervising students, and navigating a
-  hierarchical department where power runs through committees and seniority.
+  Pre-Series-A startup selling workflow automation to mid-market logistics companies.
+  Team of 12; Maya is one of two engineers who joined at founding. The CEO sets
+  product direction unilaterally; sales commitments routinely arrive before engineering
+  scoping. There is no formal process — decisions happen in Slack threads and are
+  later treated as binding agreements Maya was never part of.
 
 goals:
-  - Win competitive grants (DST/SERB/ICSSR) and build a productive research group
-  - Strengthen publication/citation record for a strong CAS promotion case
-  - Protect research time from accreditation and administrative service creep
+  - Ship the v2 API without accumulating more technical debt that blocks future hires
+  - Establish a lightweight RFC process so engineering has input before sales commits
+  - Build enough credibility with the CEO to be included in roadmap conversations
 
 challenges:
-  - Competing for scarce internal seed funding against more senior faculty
-  - Authorship and credit expectations from seniors on collaborative papers
-  - NAAC/accreditation and exam duty repeatedly dumped on junior faculty
-  - Managing up with an HoD who controls teaching load and committee seats
+  - Features get promised to enterprise clients before engineering reviews feasibility
+  - As a founding engineer she is expected to context-switch constantly across support, infra, and new features
+  - No clear career ladder — uncertain whether the company values depth or expects her to become an engineering manager
 
 key_dynamics:
-  - HoD controls teaching load, committee assignments, and seed-grant access
-  - Senior professors influence CAS/API promotions and expect co-authorship
-  - Accreditation (NAAC) and exam work flows downhill to junior faculty as "service"
+  - CEO controls roadmap and has final say; persuasion requires framing in revenue terms
+  - Sales team moves fast and treats engineering capacity as unlimited
+  - The one other founding engineer is aligned with Maya but both are too stretched to push back together
 
-tone_preference: direct, pragmatic, a little cynical
+tone_preference: Direct, no fluff — surface the tension clearly and give me something I can actually use tomorrow
