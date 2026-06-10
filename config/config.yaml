@@ -1,0 +1,102 @@
+# SCALE pipeline configuration. Everything tunable lives here.
+
+llm:
+  # --- NVIDIA NIM (active) — generous rate limits, strong models, OpenAI-compatible ---
+  provider: nvidia
+  base_url: https://integrate.api.nvidia.com/v1
+  api_key_env: NVIDIA_API_KEY   # add NVIDIA_API_KEY=nvapi-... to .env
+  free_only: false              # NIM is account-based, not a ":free" tier
+  json_mode: true               # NIM speaks OpenAI; set false if a model rejects response_format
+  # Tried in order; client rotates on rate-limit / unavailable model.
+  # Verify exact model ids at build.nvidia.com (rotation handles a wrong id gracefully).
+  models:
+    - meta/llama-3.3-70b-instruct
+    - nvidia/llama-3.1-nemotron-70b-instruct
+    - qwen/qwen2.5-72b-instruct
+
+  # --- Free OpenRouter fallback (comment the NIM block above, uncomment this) ---
+  # provider: openrouter
+  # base_url: https://openrouter.ai/api/v1
+  # api_key_env: OPENROUTER_API_KEY
+  # free_only: true
+  # models:
+  #   - meta-llama/llama-3.3-70b-instruct:free
+  #   - openai/gpt-oss-120b:free
+  #   - qwen/qwen3-next-80b-a3b-instruct:free
+  #   - z-ai/glm-4.5-air:free
+
+  temperature: 0.4          # low: we want faithful, not creative
+  max_tokens: 4000
+  cooldown_seconds: 60      # NIM limits are generous; short wait if a model is momentarily busy
+  max_retries: 5
+  request_timeout: 120
+
+tts:
+  provider: kokoro
+  base_url: http://kokoro:8880/v1   # docker-compose service name
+  # Voice can be a single id OR a weighted BLEND. This server's blend syntax is
+  # `voice(weight)+voice(weight)` (NOT the colon syntax some CLIs use).
+  # "Dark philosopher" blends:
+  #   am_onyx(0.7)+am_adam(0.3)     deep + confident   ("Marcus" clone)
+  #   bm_george(0.6)+am_onyx(0.4)   British + raspy     ("Oxford villain")
+  #   am_fenrir(0.5)+am_onyx(0.5)   gritty tactician
+  #   am_onyx(0.8)+bm_george(0.2)   maximal depth
+  voice: am_onyx(0.7)+am_adam(0.3)
+  model: kokoro
+  speed: 0.85                       # <1 slows the pace; 0.85 ~ a slower, dramatic delivery
+  format: wav                       # raw render fidelity (wav/flac lossless, or mp3)
+
+  # Mastering = the deep/bassy "broadcast" sound (needs ffmpeg; in the Docker image
+  # and the Kokoro container). Format gives fidelity; THIS gives depth.
+  master:
+    enabled: true
+    pitch_down_pct: 7               # ~7% deeper voice (the real "bass")
+    bass_gain_db: 6                 # low-shelf boost at ~110 Hz
+    compress: true                  # broadcast evenness
+    output_format: wav              # final delivery: wav (max detail) or mp3
+
+  # Deliberate pauses. The script-builder inserts visible [[pause:Ns]] markers at
+  # these beats (you can see them in output/scripts/*.txt); the renderer turns each
+  # into real silence. Tune the seconds, or set enabled: false for none.
+  pauses:
+    enabled: true
+    micro: true             # deterministic REAL beats (after numbers, before name, after questions)
+    after_intro: 1.8        # beat after the cold open
+    between_concepts: 1.5   # beat between one idea and the next
+    before_application: 0.8 # beat before "how this lands for you"
+    before_outro: 1.6       # beat before the close
+
+  # Optional ambient music bed mixed UNDER the narration (needs ffmpeg).
+  # Drop CC0/royalty-free tracks into assets/music/ (see assets/music/CREDITS.md).
+  music:
+    enabled: true
+    dir: assets/music
+    track: ""                       # blank = pick one at random each render
+    gain_db: -26                    # how quiet the bed sits under the voice
+    lowpass_hz: 700                 # roll off the highs -> soft, warm, "behind the voice"
+                                    # (lower = softer/muffled; 0 or blank = no filter)
+    duck: true                      # side-chain duck: music dips when the voice speaks
+
+ingest:
+  book_dir: data/books
+  cache_dir: data/extracted
+
+episode:
+  # Episodes map to the categories defined in config/source.yaml (one per category).
+  words_per_minute: 150      # calibrated for the slow mastered voice + pauses; used to
+                             #   convert a `--minutes` cap into a word target (and vice-versa)
+  target_words: [2000, 2500] # default polish bound; a `brief` run overrides it from its cap
+  concept_words: 150         # grounded explanation length per unit
+  application_words: 380     # persona-specific application length per unit (3-part "both" stance)
+  recap: true                # close with a short numbered recap so the ideas stick (~1-2 min)
+  polish: true               # Narration Director pass: hook open, rhythm, strong close
+                             #   (craft only — never changes facts/attribution; +1 LLM call)
+
+output:
+  script_dir: output/scripts
+  audio_dir: output/audio
+  report_dir: output/reports   # per-law faithfulness verdicts
+
+verify:
+  enabled: true
+  max_regenerations: 2       # re-synthesize the application if it drifts

@@ -1,0 +1,60 @@
+title: You Are Not So Smart - David McRaney
+author: ''
+unit_label: chapter
+unit_label_plural: chapters
+file: You Are Not So Smart - David McRaney.epub
+application_stance: both
+segmentation:
+  method: epub_toc
+categories:
+- name: You Are Not So Smart - David McRaney
+  units:
+  - Introduction
+  - 1 - Priming
+  - 2 - Confabulation
+  - 3 - Confirmation Bias
+  - 4 - Hindsight Bias
+  - 5 - The Texas Sharpshooter Fallacy
+  - 6 - Procrastination
+  - 7 - Normalcy Bias
+  - 8 - Introspection
+  - 9 - The Availability Heuristic
+  - 10 - The Bystander Effect
+  - 11 - The Dunning-Kruger Effect
+  - 12 - Apophenia
+  - 13 - Brand Loyalty
+  - 14 - The Argument from Authority
+  - 15 - The Argument from Ignorance
+  - 16 - The Straw Man Fallacy
+  - 17 - The Ad Hominem Fallacy
+  - 18 - The Just-World Fallacy
+  - 19 - The Public Goods Game
+  - 20 - The Ultimatum Game
+  - 21 - Subjective Validation
+  - 22 - Cult Indoctrination
+  - 23 - Groupthink
+  - 24 - Supernormal Releasers
+  - 25 - The Affect Heuristic
+  - 26 - Dunbar’s Number
+  - 27 - Selling Out
+  - 28 - Self-Serving Bias
+  - 29 - The Spotlight Effect
+  - 30 - The Third Person Effect
+  - 31 - Catharsis
+  - 32 - The Misinformation Effect
+  - 33 - Conformity
+  - 34 - Extinction Burst
+  - 35 - Social Loafing
+  - 36 - The Illusion of Transparency
+  - 37 - Learned Helplessness
+  - 38 - Embodied Cognition
+  - 39 - The Anchoring Effect
+  - 40 - Attention
+  - 41 - Self-Handicapping
+  - 42 - Self-Fulfilling Prophecies
+  - 43 - The Moment
+  - 44 - Consistency Bias
+  - 45 - The Representativeness Heuristic
+  - 46 - Expectation
+  - 47 - The Illusion of Control
+  - 48 - The Fundamental Attribution Error

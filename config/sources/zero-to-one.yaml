@@ -1,0 +1,26 @@
+title: Zero to One
+author: Peter thiel
+unit_label: chapter
+unit_label_plural: chapters
+file: Zero to One Notes on Startups, or How to Build the Future (Peter thiel).pdf
+application_stance: both
+segmentation:
+  method: toc_titles
+categories:
+- name: Zero to One
+  units:
+  - The Challenge of the Future
+  - Party Like It’s 1999
+  - All Happy Companies Are Different
+  - The Ideology of Competition
+  - Last Mover Advantage
+  - You Are Not a Lottery Ticket
+  - Follow the Money
+  - Secrets
+  - Foundations
+  - The Mechanics of Mafia
+  - If You Build It, Will They Come?
+  - Man and Machine
+  - Seeing Green
+  - The Founder’s Paradox
+  - 'Conclusion: Stagnation or Singularity?'

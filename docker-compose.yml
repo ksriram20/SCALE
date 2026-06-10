@@ -1,0 +1,62 @@
+services:
+  # SCALE's OWN vector DB — isolated from any other project (e.g. parcon).
+  # Host port 6533 (not 6333) so it can't clash with another Qdrant.
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6533:6333"
+    volumes:
+      - ./data/qdrant:/qdrant/storage
+    restart: unless-stopped
+
+  # Local TTS — fully offline, no API cost. OpenAI-compatible endpoint.
+  kokoro:
+    image: ghcr.io/remsky/kokoro-fastapi-cpu:latest
+    # For GPU (much faster), comment the line above and use:
+    # image: ghcr.io/remsky/kokoro-fastapi-gpu:latest
+    # and add the `deploy.resources` GPU reservation block.
+    ports:
+      - "8880:8880"
+    restart: unless-stopped
+
+  # The SCALE pipeline. Run one-off episode builds with `docker compose run`.
+  # The service is named `scale`, so you type: docker compose run --rm scale run ...
+  scale:
+    build: .
+    env_file: .env
+    environment:
+      QDRANT_URL: http://qdrant:6333
+      PYTHONPATH: /app/src   # use live ./src so code edits don't need a rebuild
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./config:/app/config
+      - ./skills:/app/skills
+      - ./library:/app/library
+      - ./assets:/app/assets   # edit skills on the host; changes apply next run
+      - ./data/hf_cache:/root/.cache   # persist the embedding model between runs
+    depends_on:
+      - kokoro
+      - qdrant
+
+  # The web UI (Gradio) on http://localhost:7860 — same image, `scale ui`.
+  ui:
+    build: .
+    command: ["ui"]
+    env_file: .env
+    environment:
+      PYTHONPATH: /app/src   # use live ./src so code edits need only `restart`, not rebuild
+      QDRANT_URL: http://qdrant:6333
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./src:/app/src
+      - ./data:/app/data
+      - ./output:/app/output
+      - ./config:/app/config
+      - ./skills:/app/skills
+      - ./library:/app/library
+      - ./assets:/app/assets
+    depends_on:
+      - kokoro

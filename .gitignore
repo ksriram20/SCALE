@@ -1,0 +1,19 @@
+# Source books (you own these — never commit them)
+data/books/
+# Generated artifacts
+data/extracted/
+data/qdrant/
+data/hf_cache/
+library/
+output/
+
+# Secrets
+.env
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/

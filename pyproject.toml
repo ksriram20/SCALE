@@ -1,0 +1,32 @@
+[project]
+name = "scale-cale"
+version = "0.1.0"
+description = "SCALE — Synthesized Contextual Audio Learning Engine"
+requires-python = ">=3.10"
+dependencies = [
+    "requests>=2.31",
+    "pyyaml>=6.0",
+    "python-dotenv>=1.0",
+    "pypdf>=4.0",
+    "EbookLib>=0.18",
+    "beautifulsoup4>=4.12",
+]
+
+# The product is SCALE; the console command is `scale`. The Python import
+# namespace stays `cale` (Contextual Audio Learning Engine) so internals are stable.
+[project.optional-dependencies]
+ui = ["gradio>=4.0"]
+rag = ["qdrant-client>=1.9", "fastembed>=0.3"]
+
+[project.scripts]
+scale = "cale.cli:main"
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]

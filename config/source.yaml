@@ -1,0 +1,80 @@
+# SOURCE BOOK definition — makes the engine book-agnostic.
+# Swap this file (and the book in data/books/) to target a different work.
+
+title: "Games People Play"
+author: "Eric Berne"
+unit_label: game            # singular noun the host uses ("this game" / "this law")
+unit_label_plural: games
+
+# How the "application" half frames the concept for the listener:
+#   defuse — how to recognize this pattern run on you / in yourself, and break it
+#   both   — recognize it, then weigh defusing vs. tactical use; you decide (recommended)
+#   deploy — how to use it to your advantage (Greene-style; manipulative)
+# Berne's whole purpose is to help you STOP these games, so "both" or "defuse" fit best.
+application_stance: both
+
+# Optional explicit filename in data/books/. Leave blank to use the first book found.
+file: ""
+
+# How the book is cut into concept units.
+#   numbered_caps_headings — body headings like "1 ALCOHOLIC" (Berne); start_title
+#                            anchors the first real unit, skipping front matter.
+#   law_regex              — "LAW N" chapter headings (e.g. Greene's 48 Laws).
+segmentation:
+  method: numbered_caps_headings
+  start_title: ALCOHOLIC
+
+# Episodes map 1:1 onto these categories, in book order. Each `games` list is the
+# canonical title (and ordering) used for nice casing and category grouping; the
+# segmenter pairs them with the detected headings in order.
+categories:
+  - name: Life Games
+    games:
+      - Alcoholic
+      - Debtor
+      - Kick Me
+      - "Now I've Got You, You Son of a Bitch"
+      - See What You Made Me Do
+  - name: Marital Games
+    games:
+      - Corner
+      - Courtroom
+      - Frigid Woman
+      - Harried
+      - "If It Weren't For You"
+      - "Look How Hard I've Tried"
+      - Sweetheart
+  - name: Party Games
+    games:
+      - "Ain't It Awful"
+      - Blemish
+      - Schlemiel
+      - "Why Don't You - Yes But"
+  - name: Sexual Games
+    games:
+      - "Let's You and Him Fight"
+      - Perversion
+      - Rapo
+      - The Stocking Game
+      - Uproar
+  - name: Underworld Games
+    games:
+      - Cops and Robbers
+      - How Do You Get Out of Here
+      - "Let's Pull a Fast One on Joey"
+  - name: Consulting Room Games
+    games:
+      - Greenhouse
+      - "I'm Only Trying to Help You"
+      - Indigence
+      - Peasant
+      - Psychiatry
+      - Stupid
+      - Wooden Leg
+  - name: Good Games
+    games:
+      - "Busman's Holiday"
+      - Cavalier
+      - Happy to Help
+      - Homely Sage
+      - "They'll Be Glad They Knew Me"

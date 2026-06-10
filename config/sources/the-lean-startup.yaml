@@ -1,0 +1,30 @@
+title: The Lean Startup
+author: Eric Ries
+unit_label: chapter
+unit_label_plural: chapters
+file: The Lean Startup How Today’s Entrepreneurs Use Continuous Innovation to Create
+  Radically Successful Businesses (Eric Ries).pdf
+application_stance: both
+segmentation:
+  method: toc_titles
+categories:
+- name: Part One VISION
+  units:
+  - Start
+  - Define
+  - Learn
+  - Experiment
+- name: Part Two STEER
+  units:
+  - Leap
+  - Test
+  - Measure
+  - Pivot (or Persevere)
+- name: Part Three ACCELERATE
+  units:
+  - Batch
+  - Grow
+  - Adapt
+  - Innovate
+  - 'Epilogue: Waste Not'
+  - Join the Movement
